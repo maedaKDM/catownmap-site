@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.catownmap.app",
+      "sha256_cert_fingerprints": [
+        "33:C3:03:4E:19:F7:64:CC:5B:B0:33:19:89:EE:0A:59:4F:CF:79:0E:7F:0C:97:55:C8:A5:23:46:F7:D6:0C:01"
+      ]
+    }
+  }
+]

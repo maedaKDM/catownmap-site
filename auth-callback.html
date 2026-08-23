@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Catown Map</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: light; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0f2f1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+  .card {
+    max-width: 360px;
+    width: calc(100% - 48px);
+    margin: 24px;
+    padding: 32px 24px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    text-align: center;
+  }
+  .emoji { font-size: 48px; margin-bottom: 8px; }
+  h1 { font-size: 20px; margin: 8px 0 4px; color: #00332e; }
+  p { font-size: 14px; color: #4a5a58; line-height: 1.6; }
+  .btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 28px;
+    background: #00897b;
+    color: #fff;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="emoji">🐾</div>
+    <h1 id="title">Catown Map</h1>
+    <p id="message">Return to the app to finish signing in.</p>
+    <a class="btn" id="openBtn" href="#">Open Catown Map</a>
+  </main>
+<script>
+  (function () {
+    var isJapanese = (navigator.language || '').toLowerCase().startsWith('ja');
+    document.documentElement.lang = isJapanese ? 'ja' : 'en';
+    document.getElementById('message').textContent = isJapanese
+      ? '認証を完了するため、ねこまちマップに戻ってください。'
+      : 'Return to Catown Map to finish signing in.';
+    document.getElementById('openBtn').textContent = isJapanese
+      ? 'ねこまちマップを開く'
+      : 'Open Catown Map';
+
+    // Verified links open the new app before this page is shown. This explicit
+    // fallback keeps email links usable for already-installed older versions.
+    document.getElementById('openBtn').href =
+      'straycat://auth-callback' + window.location.search + window.location.hash;
+  })();
+</script>
+</body>
+</html>
