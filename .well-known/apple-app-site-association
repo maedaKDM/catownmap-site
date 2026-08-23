@@ -1,0 +1,25 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "96DW9T6H45.com.catownmap.app"
+        ],
+        "components": [
+          {
+            "/": "/go",
+            "comment": "Current Catown Map share links"
+          },
+          {
+            "/": "/go.html",
+            "comment": "Legacy Catown Map share links"
+          },
+          {
+            "/": "/auth-callback",
+            "comment": "Supabase authentication callback"
+          }
+        ]
+      }
+    ]
+  }
+}
