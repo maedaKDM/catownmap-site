@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ねこまちマップ</title>
+<meta name="robots" content="noindex, follow">
+<title>Catown Map</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root { color-scheme: light; }
@@ -59,10 +60,10 @@
 <body>
   <div class="card">
     <div class="emoji">🐾</div>
-    <h1>ねこまちマップ</h1>
-    <p id="message">アプリを開いています…</p>
-    <a class="btn" id="openBtn" href="#">アプリで開く</a>
-    <p class="hint">アプリがインストールされていない場合、このボタンを押しても何も起こりません。</p>
+    <h1 id="title">Catown Map</h1>
+    <p id="message">Opening the app…</p>
+    <a class="btn" id="openBtn" href="#">Open in app</a>
+    <p class="hint" id="hint">If the app is not installed, this button may not do anything.</p>
     <div class="store-links" id="storeLinks"></div>
   </div>
 
@@ -84,13 +85,46 @@
     var params = new URLSearchParams(window.location.search);
     var type = params.get('type'); // 'cat' | 'sighting'
     var id = params.get('id');
+    var isJapanese = (navigator.language || '').toLowerCase().startsWith('ja');
+    var copy = isJapanese ? {
+      title: 'ねこまちマップ',
+      opening: 'アプリを開いています…',
+      open: 'アプリで開く',
+      hint: 'アプリがインストールされていない場合、このボタンを押しても何も起こりません。',
+      invalid: 'このリンクは正しくないようです。',
+      ready: 'アプリがインストールされていれば、上のボタンでねこまちマップが開きます。',
+      noApp: 'アプリをお持ちでない方はこちら',
+      play: 'Google Playで入手',
+      appStore: 'App Storeで入手'
+    } : {
+      title: 'Catown Map',
+      opening: 'Opening the app…',
+      open: 'Open in app',
+      hint: 'If the app is not installed, this button may not do anything.',
+      invalid: 'This link does not appear to be valid.',
+      ready: 'If Catown Map is installed, use the button above to open it.',
+      noApp: 'Get the app',
+      play: 'Get it on Google Play',
+      appStore: 'Download on the App Store'
+    };
     var messageEl = document.getElementById('message');
     var btnEl = document.getElementById('openBtn');
+    var titleEl = document.getElementById('title');
+    var hintEl = document.getElementById('hint');
     var storeEl = document.getElementById('storeLinks');
 
-    if (!type || !id || (type !== 'cat' && type !== 'sighting')) {
-      messageEl.textContent = 'このリンクは正しくないようです。';
+    document.documentElement.lang = isJapanese ? 'ja' : 'en';
+    document.title = copy.title;
+    titleEl.textContent = copy.title;
+    messageEl.textContent = copy.opening;
+    btnEl.textContent = copy.open;
+    hintEl.textContent = copy.hint;
+
+    var uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!type || !id || (type !== 'cat' && type !== 'sighting') || !uuidPattern.test(id)) {
+      messageEl.textContent = copy.invalid;
       btnEl.style.display = 'none';
+      hintEl.style.display = 'none';
       return;
     }
 
@@ -102,17 +136,17 @@
     window.location.href = appUrl;
 
     setTimeout(function () {
-      messageEl.textContent = 'アプリがインストールされていれば、上のボタンでねこまちマップが開きます。';
+      messageEl.textContent = copy.ready;
 
       var links = [];
       if (PLAY_STORE_URL) {
-        links.push('<a class="store-link" href="' + PLAY_STORE_URL + '">Google Playで入手</a>');
+        links.push('<a class="store-link" href="' + PLAY_STORE_URL + '">' + copy.play + '</a>');
       }
       if (APP_STORE_URL) {
-        links.push('<a class="store-link" href="' + APP_STORE_URL + '">App Storeで入手</a>');
+        links.push('<a class="store-link" href="' + APP_STORE_URL + '">' + copy.appStore + '</a>');
       }
       if (links.length > 0) {
-        storeEl.innerHTML = '<p>アプリをお持ちでない方はこちら</p>' + links.join('');
+        storeEl.innerHTML = '<p>' + copy.noApp + '</p>' + links.join('');
         storeEl.style.display = 'block';
       }
     }, 1200);
