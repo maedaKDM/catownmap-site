@@ -1,156 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, follow">
-<title>Catown Map</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow"><title>ねこまちマップ · Catown Map</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
-  :root { color-scheme: light; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #e0f2f1;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
-  }
-  .card {
-    max-width: 360px;
-    width: calc(100% - 48px);
-    margin: 24px;
-    padding: 32px 24px;
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-    text-align: center;
-  }
-  .emoji { font-size: 48px; margin-bottom: 8px; }
-  h1 { font-size: 20px; margin: 8px 0 4px; color: #00332e; }
-  p { font-size: 14px; color: #4a5a58; line-height: 1.6; }
-  .btn {
-    display: inline-block;
-    margin-top: 16px;
-    padding: 12px 28px;
-    background: #00897b;
-    color: #fff;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-  }
-  .hint { margin-top: 20px; font-size: 12px; color: #8a9998; }
-  .store-links { display: none; margin-top: 18px; }
-  .store-links p { margin: 0 0 8px; }
-  .store-link {
-    display: inline-block;
-    margin: 4px;
-    padding: 8px 18px;
-    border: 1px solid #00897b;
-    color: #00897b;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 13px;
-  }
+:root{color-scheme:light;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans",sans-serif;color:#494d43;background:#faf6eb}*{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:24px 16px}main{width:100%;max-width:460px;padding:32px 24px;border:1px solid #e6dfcb;border-radius:24px;background:#fffdf7;text-align:center}.brand{color:#7c8e70;font-weight:700}h1{color:#514334;font-size:24px;line-height:1.5;margin:16px 0 12px}h2{font-size:17px;margin:0 0 14px}p{font-size:15px;line-height:1.8;margin:12px 0;overflow-wrap:anywhere}.button{display:block;padding:14px 16px;border:1px solid #7e906f;border-radius:30px;text-decoration:none;color:white;background:#7e906f;font-weight:700;line-height:1.5}a:focus-visible{outline:3px solid #514334;outline-offset:4px}.store{margin-top:12px}.section{border-top:1px solid #e6dfcb;margin-top:24px;padding-top:24px}.muted{color:#666b60;font-size:14px}.pending{border:1px solid #e6dfcb;border-radius:16px;padding:12px;margin:12px 0;font-size:14px}#qr svg{display:block;width:208px;max-width:100%;height:auto;margin:auto}footer{margin-top:24px;font-size:13px}footer a{color:#59694e}[hidden]{display:none!important}@media(max-width:360px){main{padding:24px 16px}h1{font-size:22px}}
+
+main{container-type:inline-size}
+html[lang="en"] #title{font-size:min(21px,5.3cqi);white-space:nowrap}
+html[lang="ja"] #title{font-size:min(21px,5cqi);white-space:nowrap}
+html[lang="ja"] #message{font-size:min(15px,3.5cqi);white-space:nowrap}
+#openHelp{display:inline-block;font-size:11px;line-height:1.6;margin-top:4px}
 </style>
-</head>
-<body>
-  <div class="card">
-    <div class="emoji">🐾</div>
-    <h1 id="title">Catown Map</h1>
-    <p id="message">Opening the app…</p>
-    <a class="btn" id="openBtn" href="#">Open in app</a>
-    <p class="hint" id="hint">If the app is not installed, this button may not do anything.</p>
-    <div class="store-links" id="storeLinks"></div>
-  </div>
-
-<script>
-  (function () {
-    // 旧バージョンが生成したGitHub Pagesの共有URLも、新しい公式ドメインへ引き継ぐ。
-    if (window.location.hostname.toLowerCase() === 'maedakdm.github.io') {
-      window.location.replace(
-        'https://catownmap.com/go.html' + window.location.search + window.location.hash
-      );
-      return;
-    }
-
-    // 公開後にストアのURLをここへ入れると、下に自動でボタンが表示されるようになる。
-    // 空のままなら何も表示されない(未公開の間はダミーリンクを出さないため)。
-    var PLAY_STORE_URL = '';
-    var APP_STORE_URL = '';
-
-    var params = new URLSearchParams(window.location.search);
-    var type = params.get('type'); // 'cat' | 'sighting'
-    var id = params.get('id');
-    var isJapanese = (navigator.language || '').toLowerCase().startsWith('ja');
-    var copy = isJapanese ? {
-      title: 'ねこまちマップ',
-      opening: 'アプリを開いています…',
-      open: 'アプリで開く',
-      hint: 'アプリがインストールされていない場合、このボタンを押しても何も起こりません。',
-      invalid: 'このリンクは正しくないようです。',
-      ready: 'アプリがインストールされていれば、上のボタンでねこまちマップが開きます。',
-      noApp: 'アプリをお持ちでない方はこちら',
-      play: 'Google Playで入手',
-      appStore: 'App Storeで入手'
-    } : {
-      title: 'Catown Map',
-      opening: 'Opening the app…',
-      open: 'Open in app',
-      hint: 'If the app is not installed, this button may not do anything.',
-      invalid: 'This link does not appear to be valid.',
-      ready: 'If Catown Map is installed, use the button above to open it.',
-      noApp: 'Get the app',
-      play: 'Get it on Google Play',
-      appStore: 'Download on the App Store'
-    };
-    var messageEl = document.getElementById('message');
-    var btnEl = document.getElementById('openBtn');
-    var titleEl = document.getElementById('title');
-    var hintEl = document.getElementById('hint');
-    var storeEl = document.getElementById('storeLinks');
-
-    document.documentElement.lang = isJapanese ? 'ja' : 'en';
-    document.title = copy.title;
-    titleEl.textContent = copy.title;
-    messageEl.textContent = copy.opening;
-    btnEl.textContent = copy.open;
-    hintEl.textContent = copy.hint;
-
-    var uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (!type || !id || (type !== 'cat' && type !== 'sighting') || !uuidPattern.test(id)) {
-      messageEl.textContent = copy.invalid;
-      btnEl.style.display = 'none';
-      hintEl.style.display = 'none';
-      return;
-    }
-
-    var appUrl = 'straycat://' + type + '/' + encodeURIComponent(id);
-    btnEl.href = appUrl;
-
-    // ページを開いた瞬間に一度だけ自動でアプリを開こうとする。
-    // アプリが無ければ何も起きず、下の案内文がそのまま残る。
-    window.location.href = appUrl;
-
-    setTimeout(function () {
-      messageEl.textContent = copy.ready;
-
-      var links = [];
-      if (PLAY_STORE_URL) {
-        links.push('<a class="store-link" href="' + PLAY_STORE_URL + '">' + copy.play + '</a>');
-      }
-      if (APP_STORE_URL) {
-        links.push('<a class="store-link" href="' + APP_STORE_URL + '">' + copy.appStore + '</a>');
-      }
-      if (links.length > 0) {
-        storeEl.innerHTML = '<p>' + copy.noApp + '</p>' + links.join('');
-        storeEl.style.display = 'block';
-      }
-    }, 1200);
-  })();
-</script>
-</body>
-</html>
+<script src="/vendor/qrcode-2.0.4.js" defer></script><script src="/go.js?v=9d0eb75ff47f" defer></script>
+</head><body><main>
+<div class="brand" id="brand">ねこまちマップ</div><h1 id="title">共有された猫・投稿を見る</h1><p id="message" hidden></p>
+<div id="actions" hidden><a class="button" id="openBtn" href="#">アプリで開く</a><p class="muted" id="openHint"><small id="openHelp"></small></p>
+<section class="section" aria-labelledby="getTitle"><h2 id="getTitle">アプリをお持ちでない方</h2><div id="stores"></div><p class="muted" id="installHint"></p></section>
+<section class="section" id="desktop" aria-labelledby="qrTitle" hidden><h2 id="qrTitle">スマホでこのリンクを開く</h2><div id="qr" role="img" aria-label="共有リンクのQRコード"></div><p class="muted" id="qrHint"></p></section></div>
+<noscript><p>JavaScriptを有効にして、このページを開き直してください。<br>Enable JavaScript and reload this page.</p></noscript>
+<footer><a id="home" href="/">ねこまちマップについて</a></footer>
+</main></body></html>

@@ -57,6 +57,7 @@
           <li><strong>Location:</strong> device location when you use features that need it, such as finding nearby cats, checking your viewing radius, or setting a sighting location.</li>
           <li><strong>Detail-view history:</strong> your account, the cat or sighting viewed, and the date and time when you open a detail page while signed in.</li>
           <li><strong>Technical and security information:</strong> IP address, request time, device, operating system, browser, language, authentication and bot-detection signals, abuse-prevention information, and error data.</li>
+          <li><strong>Notification information:</strong> Firebase installation identifiers, FCM registration tokens, notification settings, and app and operating-system information used to register app installations and deliver push notifications. Notification registrations made while signed in are associated with your account. The notification SDK may process installation identifiers and related information even if you do not allow notifications in your operating-system settings.</li>
           <li><strong>Support communications:</strong> your email address, message, and information needed to respond.</li>
         </ul>
         <p>We do not use third-party advertising or advertising trackers on the official website. Cloudflare still processes technical request information to deliver and protect the site.</p>
@@ -71,6 +72,7 @@
           <li>To apply viewing-radius and location-safety controls and prevent scraping, bots, abuse, and unauthorized access</li>
           <li>To investigate reports, moderate content, enforce our Terms, and respond to risks of harm to animals or people</li>
           <li>To respond to questions, incidents, deletion requests, and other support needs</li>
+          <li>To deliver push notifications according to your settings, update notification registrations, and help prevent delivery to an incorrect account</li>
           <li>To comply with legal obligations and valid legal requests</li>
         </ul>
       </section>
@@ -78,9 +80,9 @@
       <section class="section" id="location">
         <h2>4. Location and photos</h2>
         <p>We access your current device location only when you use a feature that needs it and grant permission through your operating system. You may revoke location permission in your device settings, although some features may stop working.</p>
-        <p>Coordinates submitted with a sighting are stored at their precise value so we can manage the record and apply safety features. When showing a location to other users, we may blur it, restrict its visibility, or hide it based on viewing conditions or safety concerns.</p>
-        <p>We use Google ML Kit to detect and blur faces before upload. Image analysis takes place on your device; the input image and detection results are not sent to Google servers. ML Kit may contact Google to receive model updates or related technical information.</p>
-        <p>We may send a posted image or its image URL to Replicate to generate an image embedding used to identify similar cats or photos. We use the resulting embedding only to provide similarity features in the Service.</p>
+        <p>Coordinates submitted with a sighting are stored at their precise value so we can manage the record and apply safety features. Other users normally see a 300-metre-diameter circle containing the submitted location and a three-hour time window. The poster and administrators can access the precise location. Additional viewing restrictions or hiding may apply for safety.</p>
+        <p>For rescue location sharing, a requester can access the precise location for a limited time only after the poster approves the request. The poster can revoke access. We record the reason for requesting access, request and approval actions, viewing times, and external-map openings; the poster and requester can review the activity history. The operator uses these records for safety investigations and handling reports. Opening an external map sends the relevant coordinates to that service. Expiry or revocation cannot recall screenshots or information already retained outside the App.</p>
+        <p>We use Google ML Kit to detect and blur faces before upload. Image analysis takes place on your device; the input image and detection results are not sent to Google servers. ML Kit also contacts Google for updates and sends API performance and usage metrics, which Google uses to maintain and improve the APIs and prevent abuse.</p>
         <div class="callout">
           <strong>Before posting:</strong> please check that your photo does not unnecessarily reveal a home, person, vehicle number, or other identifying information.
         </div>
@@ -104,10 +106,10 @@
         <ul>
           <li><strong>Supabase:</strong> authentication, database, photo storage, and server functions. <a href="https://supabase.com/privacy" rel="noopener noreferrer">Supabase Privacy Policy</a></li>
           <li><strong>Google:</strong> Google sign-in, Google Maps Platform, Geocoding and Time Zone APIs, ML Kit, Google Fonts, and support email. <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google Privacy Policy</a></li>
+          <li><strong>Google Firebase:</strong> Firebase Cloud Messaging and Firebase Installations for notification delivery and identification of app installations. Notification registration information is also processed by Supabase. <a href="https://firebase.google.com/support/privacy" rel="noopener noreferrer">Firebase Privacy and Security</a></li>
           <li><strong>Apple:</strong> Sign in with Apple authentication. <a href="https://www.apple.com/legal/privacy/" rel="noopener noreferrer">Apple Privacy Policy</a></li>
           <li><strong>Cloudflare:</strong> website delivery and security, and Turnstile bot detection. Turnstile processes browser, device, and network signals needed for bot detection, not your form entries or communications. <a href="https://www.cloudflare.com/turnstile-privacy-policy/" rel="noopener noreferrer">Turnstile Privacy Addendum</a></li>
           <li><strong>Resend:</strong> delivery of authentication and password-reset emails. It processes the recipient address, email content, and delivery metadata. <a href="https://resend.com/legal/privacy-policy" rel="noopener noreferrer">Resend Privacy Policy</a></li>
-          <li><strong>Replicate:</strong> generation of image embeddings for photo and cat similarity features. <a href="https://replicate.com/privacy" rel="noopener noreferrer">Replicate Privacy Policy</a></li>
         </ul>
       </section>
 
@@ -130,24 +132,30 @@
         <ul>
           <li><strong>Account, profile, content, and activity information:</strong> while your account remains active or as needed to provide the relevant feature, subject to the deletion rules below.</li>
           <li><strong>Cat and sighting detail-view history:</strong> 90 days from the time of the view.</li>
-          <li><strong>Account identifier or IP address used for rate limiting:</strong> no more than 24 hours.</li>
-          <li><strong>Reports, disputes, and moderation records:</strong> the link to the reporter or moderator is generally retained for one year from the record date. We may then remove that link and retain a de-identified record to prevent repeat abuse and preserve decision history.</li>
-          <li><strong>Account-deletion work records:</strong> up to 90 days from the start of deletion.</li>
+          <li><strong>Account identifier or IP address used for rate limiting:</strong> deleted by a scheduled task running every minute after 24 hours have elapsed.</li>
+          <li><strong>Reports, disputes, and moderation records:</strong> reporter IDs are generally retained for one year after a report is recorded or updated, and moderator IDs for one year after the action. We then remove those IDs stored directly on the records, including rescue location-sharing reports. Report text may remain for abuse prevention and decision history. Removing IDs does not guarantee that a person cannot be inferred from free text or other information.</li>
+          <li><strong>Account-deletion work records:</strong> 90 days after deletion completes, then removed by a scheduled task running every minute. Unfinished work records are retained while needed to resume and complete account deletion.</li>
+          <li><strong>Push delivery work records:</strong> sent, failed, and skipped delivery records are retained for 30 days after processing completes. Pending and processing records remain while needed for delivery. This is separate from the in-app notification list.</li>
+          <li><strong>Push device registrations:</strong> 90 days after the last registration or update. A device is registered again when you return with push notifications enabled.</li>
+          <li><strong>Location-sharing requests and activity history:</strong> one year after sharing ends, is rejected, revoked or cancelled, or the request expires. Report text is handled separately under the moderation retention rule above.</li>
           <li><strong>Support communications:</strong> for a reasonable period after resolution to maintain response history and prevent disputes.</li>
         </ul>
+        <p>Detail-view history, push delivery work records, device registrations, and location-sharing requests and activity history are deleted, and direct reporter/moderator IDs are removed, by a daily scheduled task after the periods above have elapsed. Scheduled processing times or system failures may delay deletion or removal of ID links.</p>
         <p>We may retain only the information necessary for longer where required by law, a dispute, a safety investigation, a valid preservation request, or another legitimate reason. Provider logs and backups may contain information scheduled for deletion for a limited period under each provider's operational retention process.</p>
       </section>
 
       <section class="section" id="deletion">
         <h2>10. Account deletion</h2>
         <p>You can delete your account from “Profile &amp; Account Settings” in the App.</p>
-        <p>During deletion, you may choose either to delete all sightings and photos you posted or keep them as anonymous community records. If you keep them, we remove the link to your account and your private notes. You cannot edit, restore, or reclaim those records after deletion.</p>
+        <p>During deletion, you may choose either to delete all sightings and photos you posted or keep them as community records without an account link. If you keep them, we remove the link to your account and your private notes. You cannot edit, restore, or reclaim those records after deletion.</p>
         <p>We delete your account, profile, comments, favorites, votes, detail-view history, and other account-linked personal data. We may keep safety and moderation records, but we remove their link to your deleted account.</p>
         <p>See <a href="/account-deletion">Account deletion</a> for more information.</p>
+        <p>Retained photos, locations, and times may still allow someone to infer who posted them or identify another person. Removing the account link does not guarantee anonymity.</p>
       </section>
 
       <section class="section" id="transfers">
         <h2>11. International processing</h2>
+        <p>Our Supabase project for the primary database and photo storage is located in the Mumbai region of India. Resend primarily processes data in the United States. Firebase notification delivery, Google services, and Cloudflare delivery and protection may use facilities around the world. Supabase may also process data outside the selected region for purposes such as support.</p>
         <p>The Service is available to users around the world. Information may be processed outside your country, including in countries where our service providers operate servers. Where required, we use safeguards made available by those providers and comply with applicable transfer requirements.</p>
       </section>
 
@@ -159,6 +167,7 @@
       <section class="section" id="rights">
         <h2>13. Your rights and choices</h2>
         <p>You can review or change profile information, revoke location permission, and delete content or your account through the App.</p>
+        <p>You can change notifications in the App or your operating-system settings. When you sign out, the App attempts to unregister that device's notifications for your account. Completion may be delayed by network conditions or other technical issues.</p>
         <p>Depending on where you live, you may have rights to access, correct, delete, restrict, or object to processing of your personal information; receive a portable copy; withdraw consent; and complain to a data-protection authority.</p>
         <p>To make a request, email <a href="mailto:catownmap@gmail.com">catownmap@gmail.com</a> with information sufficient for us to verify your identity. We will respond within a reasonable period unless an exception under applicable law applies.</p>
       </section>
