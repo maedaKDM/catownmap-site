@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.catownmap.app",
       "sha256_cert_fingerprints": [
-        "33:C3:03:4E:19:F7:64:CC:5B:B0:33:19:89:EE:0A:59:4F:CF:79:0E:7F:0C:97:55:C8:A5:23:46:F7:D6:0C:01"
+        "33:C3:03:4E:19:F7:64:CC:5B:B0:33:19:89:EE:0A:59:4F:CF:79:0E:7F:0C:97:55:C8:A5:23:46:F7:D6:0C:01",
+        "2E:DE:F3:30:5C:91:23:C9:89:28:35:BD:19:01:50:2B:1D:01:19:FC:99:C6:FF:F7:7D:0A:90:35:50:B6:67:BD"
       ]
     }
   }

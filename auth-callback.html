@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
 <title>Catown Map</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
@@ -41,30 +42,63 @@
     font-weight: 600;
     font-size: 15px;
   }
+  .btn[hidden] { display: none; }
 </style>
 </head>
 <body>
   <main class="card">
     <div class="emoji">🐾</div>
     <h1 id="title">Catown Map</h1>
-    <p id="message">Return to the app to finish signing in.</p>
-    <a class="btn" id="openBtn" href="#">Open Catown Map</a>
+    <p id="message">Tap the “Open Catown Map” button to go to the app.</p>
+    <a class="btn" id="openBtn" href="https://catownmap.com/auth-callback">Open Catown Map</a>
   </main>
 <script>
   (function () {
-    var isJapanese = (navigator.language || '').toLowerCase().startsWith('ja');
+    var params = new URLSearchParams(window.location.search);
+    var isJapanese = (params.get('locale') || navigator.language || '').toLowerCase().startsWith('ja');
     document.documentElement.lang = isJapanese ? 'ja' : 'en';
     document.getElementById('message').textContent = isJapanese
-      ? '認証を完了するため、ねこまちマップに戻ってください。'
-      : 'Return to Catown Map to finish signing in.';
+      ? '「ねこまちマップを開く」ボタンをタップしてアプリへ移動してください。'
+      : 'Tap the “Open Catown Map” button to go to the app.';
     document.getElementById('openBtn').textContent = isJapanese
       ? 'ねこまちマップを開く'
       : 'Open Catown Map';
 
-    // Verified links open the new app before this page is shown. This explicit
-    // fallback keeps email links usable for already-installed older versions.
-    document.getElementById('openBtn').href =
-      'straycat://auth-callback' + window.location.search + window.location.hash;
+    // Keep the HTTPS callback intact. Android's explicit package prevents a
+    // different app from claiming the authentication link via a custom scheme.
+    // Rebuild from an allowlist, never interpolate input into Intent directives.
+    var callback = new URL('https://catownmap.com/auth-callback');
+    var token = params.get('token_hash');
+    var type = params.get('type');
+    var code = params.get('code');
+    var valid = false;
+    if (params.getAll('token_hash').length === 1 &&
+        params.getAll('type').length === 1 && !params.has('code') &&
+        /^[A-Za-z0-9_-]{1,2048}$/.test(token || '') &&
+        (type === 'signup' || type === 'recovery')) {
+      callback.searchParams.set('token_hash', token);
+      callback.searchParams.set('type', type);
+      valid = true;
+    } else if (params.getAll('code').length === 1 && !params.has('token_hash') &&
+        /^[A-Za-z0-9_-]{1,2048}$/.test(code || '')) {
+      callback.searchParams.set('code', code);
+      valid = true;
+    }
+    var button = document.getElementById('openBtn');
+    if (valid) {
+      callback.searchParams.set('locale', isJapanese ? 'ja' : 'en');
+      button.href = /Android/i.test(navigator.userAgent || '')
+        ? 'intent://' + callback.host + callback.pathname + callback.search +
+          '#Intent;scheme=https;package=com.catownmap.app;end'
+        : callback.href;
+    } else {
+      button.removeAttribute('href');
+      button.hidden = true;
+      document.getElementById('message').textContent = isJapanese
+        ? '認証情報がありません。メールに戻り、リンクをもう一度開いてください。'
+        : 'Authentication information is missing. Return to your email and open the link again.';
+    }
+    window.history.replaceState(null, '', '/auth-callback');
   })();
 </script>
 </body>
