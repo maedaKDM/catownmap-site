@@ -6,7 +6,7 @@ function run(ua,lang,type='cat',value=id,configured=false,platform='',touch=0,re
  const location={hostname:'catownmap.com',search:`?type=${type}&id=${value}&lang=${requested}`,hash:''};
  const context={URLSearchParams,window:{location},navigator:{userAgent:ua,language:lang,platform,maxTouchPoints:touch},document:{documentElement:{},getElementById(k){return nodes[k]??=make()},createElement(tag){return {...make(),tag}}}};
  vm.createContext(context);vm.runInContext(vendor,context);
- vm.runInContext(configured?source.replace("var PLAY_STORE_URL = '';","var PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=test';").replace("var APP_STORE_URL = '';","var APP_STORE_URL = 'https://apps.apple.com/app/id123';"):source,context);
+ vm.runInContext(configured?source:source.replace(/var PLAY_STORE_URL = '[^']*';/,"var PLAY_STORE_URL = '';").replace(/var APP_STORE_URL = '[^']*';/,"var APP_STORE_URL = '';"),context);
  assert.equal(location.href,undefined,'no forced redirect');return {nodes,context};
 }
 for(const type of ['cat','sighting'])for(const lang of ['ja-JP','en-US'])for(const configured of [false,true]){
@@ -17,6 +17,7 @@ for(const type of ['cat','sighting'])for(const lang of ['ja-JP','en-US'])for(con
   assert.equal(c.document.documentElement.lang,lang==='ja-JP'?'ja':'en');
   if(desktop){assert.equal(n.desktop.hidden,false);assert.match(n.qr.innerHTML,/<svg/)}
   assert(n.stores.children.every(x=>x.tag===(configured?'a':'p')));
+  if(configured)assert(n.stores.children.every(x=>x.href==='https://play.google.com/store/apps/details?id=com.catownmap.app'||x.href==='https://apps.apple.com/app/id6804516894'));
  }
 }
 assert.equal(run('Macintosh','en','cat',id,false,'MacIntel',5).nodes.stores.children.length,1);

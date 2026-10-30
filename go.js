@@ -1,10 +1,11 @@
-/* Fill in the real product URLs when each store listing becomes public.
+/* Public product URLs (Google Play since 2026-10-22, App Store since 2026-10-29).
+ * An empty value shows a coming-soon notice instead of a download button.
  * QR codes are generated locally, without sending shared IDs to a QR service.
  */
 (function () {
   'use strict';
-  var PLAY_STORE_URL = '';
-  var APP_STORE_URL = '';
+  var PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.catownmap.app';
+  var APP_STORE_URL = 'https://apps.apple.com/app/id6804516894';
   if (window.location.hostname.toLowerCase() === 'maedakdm.github.io') {
     window.location.replace('https://catownmap.com/go' + window.location.search + window.location.hash);
     return;
