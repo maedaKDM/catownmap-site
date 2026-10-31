@@ -27,3 +27,12 @@
 
 /go.js
   Cache-Control: no-cache
+
+/get
+  Cache-Control: no-cache
+
+/get.html
+  Cache-Control: no-cache
+
+/get.js
+  Cache-Control: no-cache
