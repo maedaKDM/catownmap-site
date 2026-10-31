@@ -1,6 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const original=fs.readFileSync('get.js','utf8');
-let source=original;
+// Store-only behaviour is checked without the provider token first.
+let source=original.replace(/var APPLE_PROVIDER_TOKEN = '[^']*';/,"var APPLE_PROVIDER_TOKEN = '';");
 const PLAY='https://play.google.com/store/apps/details?id=com.catownmap.app';
 const APPLE='https://apps.apple.com/app/id6804516894';
 function run(ua,{search='',lang='en-US',platform='',touch=0}={}){
@@ -35,8 +36,8 @@ assert.equal(unsafe,PLAY+'&referrer='+encodeURIComponent('utm_campaign=ok'),'uns
 assert.equal(run('iPhone',{search:'?utm_source=instagram'}).replaced,APPLE);
 console.log('PASS: valid utm_* values reach Google Play as the install referrer; others are dropped');
 
-source=original.replace(/var APPLE_PROVIDER_TOKEN = '[^']*';/,"var APPLE_PROVIDER_TOKEN = '123456';");
-const CAMPAIGN='https://apps.apple.com/app/apple-store/id6804516894?pt=123456&ct=';
+source=original;
+const CAMPAIGN='https://apps.apple.com/app/apple-store/id6804516894?pt=129348442&ct=';
 assert.equal(run('iPhone',{search:'?utm_source=instagram&utm_campaign=doha_launch'}).replaced,CAMPAIGN+'doha_launch&mt=8');
 assert.equal(run('iPhone',{search:'?utm_source=instagram'}).replaced,CAMPAIGN+'instagram&mt=8','source used without campaign');
 assert.equal(run('iPhone',{search:'?utm_campaign=x%26pt%3D9'}).replaced,APPLE,'unsafe campaign falls back to the plain link');

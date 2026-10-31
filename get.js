@@ -7,7 +7,7 @@
 (function () {
   'use strict';
   var PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.catownmap.app';
-  var APPLE_PROVIDER_TOKEN = '';
+  var APPLE_PROVIDER_TOKEN = '129348442';
   var APP_STORE_URL = 'https://apps.apple.com/app/id6804516894';
   var params = new URLSearchParams(window.location.search);
   var ua = navigator.userAgent || '';
