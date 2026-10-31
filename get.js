@@ -48,5 +48,11 @@
     el('googlePlay').href = playUrl;
     el('home').textContent = ja ? 'ねこまちマップについて' : 'About Catown Map';
     el('home').href = ja ? '/' : '/en';
+    // Keep stay/utm_* so switching language does not drop the campaign.
+    var switched = new URLSearchParams(window.location.search);
+    switched.set('lang', ja ? 'en' : 'ja');
+    el('langSwitch').textContent = ja ? 'English' : '日本語';
+    el('langSwitch').lang = el('langSwitch').hreflang = ja ? 'en' : 'ja';
+    el('langSwitch').href = '?' + switched.toString();
   });
 })();

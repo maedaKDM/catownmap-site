@@ -41,3 +41,10 @@ assert.equal(run('iPhone',{search:'?utm_campaign=x%26pt%3D9'}).replaced,APPLE,'u
 assert.equal(run('iPhone').replaced,APPLE,'untagged visits keep the plain link');
 assert.equal(run('Windows NT 10.0',{search:'?utm_campaign=doha_launch'}).nodes.appStore.href,CAMPAIGN+'doha_launch&mt=8');
 console.log('PASS: with a provider token, the campaign reaches App Store Connect analytics');
+
+source=original;
+const en=run('Windows NT 10.0',{search:'?stay=1&utm_campaign=doha_launch',lang:'en-US'}).nodes.langSwitch;
+assert.equal(en.textContent,'日本語');assert.equal(en.href,'?stay=1&utm_campaign=doha_launch&lang=ja');
+const ja=run('Windows NT 10.0',{search:'?lang=ja'}).nodes.langSwitch;
+assert.equal(ja.textContent,'English');assert.equal(ja.href,'?lang=en');
+console.log('PASS: the language switch keeps stay/utm_* and flips lang');
