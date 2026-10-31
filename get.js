@@ -44,8 +44,11 @@
     el('lead').textContent = ja ? '街の猫を、地図でみんなと見守るアプリです。'
       : 'Find and share the cats of your town on one map.';
     document.title = el('title').textContent;
-    el('appStore').href = appleUrl;
-    el('googlePlay').href = playUrl;
+    // Store web pages pick their own language on desktop: the App Store opens
+    // the US storefront without a country, Google Play follows the browser.
+    el('appStore').href = appleUrl === APP_STORE_URL && ja
+      ? 'https://apps.apple.com/jp/app/id6804516894' : appleUrl;
+    el('googlePlay').href = playUrl + (ja ? '&hl=ja' : '&hl=en');
     el('home').textContent = ja ? 'ねこまちマップについて' : 'About Catown Map';
     el('home').href = ja ? '/' : '/en';
     // Keep stay/utm_* so switching language does not drop the campaign.

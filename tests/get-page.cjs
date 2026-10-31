@@ -20,7 +20,9 @@ console.log('PASS: Android and iPhone/iPad visitors go straight to their store')
 
 const desktop=run('Windows NT 10.0');
 assert.equal(desktop.replaced,undefined);
-assert.equal(desktop.nodes.appStore.href,APPLE);assert.equal(desktop.nodes.googlePlay.href,PLAY);
+assert.equal(desktop.nodes.appStore.href,APPLE);assert.equal(desktop.nodes.googlePlay.href,PLAY+'&hl=en');
+const jaDesktop=run('Windows NT 10.0',{lang:'ja-JP'}).nodes;
+assert.equal(jaDesktop.appStore.href,'https://apps.apple.com/jp/app/id6804516894');assert.equal(jaDesktop.googlePlay.href,PLAY+'&hl=ja');
 assert.equal(desktop.context.document.documentElement.lang,'en');
 assert.equal(run('Windows NT 10.0',{lang:'ja-JP'}).context.document.documentElement.lang,'ja');
 assert.equal(run('Mozilla/5.0 (Linux; Android 14)',{search:'?stay=1'}).replaced,undefined,'stay=1 previews the page');
